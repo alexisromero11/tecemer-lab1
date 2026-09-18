@@ -1,3 +1,7 @@
+"""Organiza los archivos de una carpeta en subcarpetas segun su extension."""
+
+import argparse
+import shutil
 from pathlib import Path
 
 CATEGORIAS = {
@@ -7,13 +11,30 @@ CATEGORIAS = {
     ".zip": "Comprimidos", ".rar": "Comprimidos",
 }
 
-def clasificar(archivo):
- return CATEGORIAS.get(archivo.suffix.lower(), "Otros")
+def clasificar(archivo: Path) -> str:
+    """Determina la categoria de un archivo segun su extension.
 
+    Args:
+        archivo: Ruta del archivo a clasificar.
 
-import shutil
+    Returns:
+        Nombre de la categoria correspondiente, u "Otros" si la
+        extension no esta registrada.
+    """
+    return CATEGORIAS.get(archivo.suffix.lower(), "Otros")
+
 
 def organizar_carpeta(carpeta, simulacion=False):
+    """Organiza los archivos de una carpeta en subcarpetas por categoria.
+
+    Args:
+        carpeta: Carpeta cuyos archivos se van a organizar.
+        simulacion: Si es True, solo muestra que haria sin mover archivos.
+
+    Returns:
+        Numero de archivos movidos (o que se moverian, en modo
+        simulacion).
+    """
     movidos = 0
     for archivo in carpeta.iterdir():
         if archivo.is_dir() or archivo.name.startswith("."):
@@ -31,10 +52,8 @@ def organizar_carpeta(carpeta, simulacion=False):
         movidos += 1
     return movidos
 
-
-import argparse
-
 def main():
+    """Punto de entrada de linea de comandos del organizador."""
     parser = argparse.ArgumentParser(description="Organiza archivos por tipo.")
     parser.add_argument("carpeta", type=Path, help="Carpeta a organizar")
     parser.add_argument("--dry-run", action="store_true", help="Solo simula, no mueve archivos")
